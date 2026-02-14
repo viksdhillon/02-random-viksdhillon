@@ -80,12 +80,12 @@ sampleExpr3 =
 
 exprToString :: Expr -> String
 exprToString VarX                 = "x"
-exprToString VarY                 = error "TBD:VarY"
-exprToString (Sine e)             = error "TBD:Sin"
-exprToString (Cosine e)           = error "TBD:Cos"
-exprToString (Average e1 e2)      = error "TBD:Avg"
-exprToString (Times e1 e2)        = error "TBD:Times"
-exprToString (Thresh e1 e2 e3 e4) = error "TBD:Thresh"
+exprToString VarY                 = "y"
+exprToString (Sine e)             = "sin(pi*" ++ exprToString e ++ ")"
+exprToString (Cosine e)           = "cos(pi*" ++ exprToString e ++ ")"
+exprToString (Average e1 e2)      = "((" ++ exprToString e1 ++ "+" ++ exprToString e2 ++ ")/2)"
+exprToString (Times e1 e2)        = exprToString e1 ++ "*" ++ exprToString e2
+exprToString (Thresh e1 e2 e3 e4) = "(" ++ exprToString e1 ++ "<" ++ exprToString e2 ++ "?" ++ exprToString e3 ++ ":" ++ exprToString e4 ++ ")"
 
 --------------------------------------------------------------------------------
 -- | Evaluating arithmetic expressions at a given (x, y)-coordinate ------------
@@ -101,7 +101,13 @@ exprToString (Thresh e1 e2 e3 e4) = error "TBD:Thresh"
 -- 0.8090169943749475
 
 eval :: Double -> Double -> Expr -> Double
-eval x y e = error "TBD:eval"
+eval x y VarX = x
+eval x y VarY = y 
+eval x y (Sine e1) = sin (pi * eval x y e1)
+eval x y (Cosine e1) = cos (pi * eval x y e1)
+eval x y (Average e1 e2) = ((eval x y e1) + (eval x y e2)) / 2
+eval x y (Times e1 e2) = (eval x y e1) * (eval x y e2)
+eval x y (Thresh e1 e2 e3 e4) = if (eval x y e1) < (eval x y e2) then (eval x y e3) else (eval x y e4)
 
 evalFn :: Double -> Double -> Expr -> Double
 evalFn x y e = assert (-1.0 <= rv && rv <= 1.0) rv
@@ -122,7 +128,16 @@ build 0
   | otherwise = VarY
   where
     r         = rand 10
-build d       = error "TBD:build"
+
+build d =
+  case rand 100 of
+    r | r < 20  -> Sine   (build (d - 1))
+      | r < 40  -> Cosine (build (d - 1))
+      | r < 65  -> Average (build (d - 1)) (build (d - 1))
+      | r < 90  -> Times   (build (d - 1)) (build (d - 1))
+      | otherwise ->
+          Thresh (build (d - 1)) (build (d - 1))
+                 (build (d - 1)) (build (d - 1))
 
 --------------------------------------------------------------------------------
 -- | Best Image "Seeds" --------------------------------------------------------
