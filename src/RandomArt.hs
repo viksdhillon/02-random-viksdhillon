@@ -145,16 +145,16 @@ build d =
 
 -- grayscale
 g1, g2, g3 :: (Int, Int)
-g1 = (error "TBD:depth1", error "TBD:seed1")
-g2 = (error "TBD:depth2", error "TBD:seed2")
-g3 = (error "TBD:depth3", error "TBD:seed3")
+g1 = (1,12)
+g2 = (2,34)
+g3 = (3,56)
 
 
 -- color
 c1, c2, c3 :: (Int, Int)
-c1 = (error "TBD:depth1", error "TBD:seed1")
-c2 = (error "TBD:depth2", error "TBD:seed2")
-c3 = (error "TBD:depth3", error "TBD:seed3")
+c1 = (1,78)
+c2 = (2,90)
+c3 = (3,21)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
